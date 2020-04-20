@@ -1,13 +1,13 @@
 package comm
 
 import (
-	"awesomeProject/conf"
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"gin-sam/conf"
 	"math/rand"
 	"strconv"
 	"strings"

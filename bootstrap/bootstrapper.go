@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -42,17 +43,28 @@ func (b *Bootstrapper) SetupCron() {
 }
 
 const (
-	StaticAsset = "./public/"
+	StaticAsset = "public/"
 	Favicon     = "favicon.ico"
 )
 
 func (b *Bootstrapper) BootStrap() *Bootstrapper {
+	b.Use(gin.Logger())
+	b.Use(gin.Recovery())
 	// some setup todo
 	b.SetupCron()
 
+	b.Static("/assets", StaticAsset)
+	b.StaticFile("favicon.ico", StaticAsset+Favicon)
 	return b
 }
 
 func (b *Bootstrapper) Start(addr string) {
-	b.Run(addr)
+	s := &http.Server{
+		Addr:           addr,
+		Handler:        b,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	s.ListenAndServe()
 }
