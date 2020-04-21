@@ -1,5 +1,6 @@
 package models
 
+// 黑名单
 type Black struct {
 	ID         int    `gorm:"primary_key;column:id;type:int(10) unsigned;not null" json:"-"`
 	Username   string `gorm:"column:username;type:varchar(50);not null" json:"username"` // 用户名

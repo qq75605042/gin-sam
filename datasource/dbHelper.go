@@ -35,6 +35,11 @@ func NewDaMaster() *gorm.DB {
 		return nil
 	}
 	db.LogMode(true)
+	// SetMaxIdleCons 设置连接池中的最大闲置连接数。
+	db.DB().SetMaxIdleConns(10)
+
+	// SetMaxOpenCons 设置数据库的最大连接数量。
+	db.DB().SetMaxOpenConns(100)
 	masterInstance = db
 	return db
 }
