@@ -35,3 +35,7 @@ func (d *BlackDao) Update(id int, data interface{}) error {
 func (d *BlackDao) Create(data *models.Black) error {
 	return d.db.Create(&data).Error
 }
+
+func NewBlackDao(db *gorm.DB) *BlackDao {
+	return &BlackDao{db}
+}

@@ -3,9 +3,11 @@ package api
 import (
 	"fmt"
 	"gin-sam/comm"
+	"gin-sam/utils"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"net/http"
 )
 
 //var validate *validator.Validate
@@ -49,9 +51,17 @@ func GetAuth(c *gin.Context) {
 			})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"message": "login success",
-		})
+		if token, err := utils.GenerateToken(a.UserName, a.Password); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": err,
+			})
+			return
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "login success",
+				"token":   token,
+			})
+		}
 	}
 
 }

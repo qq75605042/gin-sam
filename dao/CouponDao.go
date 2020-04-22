@@ -35,3 +35,7 @@ func (d *CouponDao) Update(id int, data interface{}) error {
 func (d *CouponDao) Create(data *models.Coupon) error {
 	return d.db.Create(&data).Error
 }
+
+func NewCouponDao(db *gorm.DB) *CouponDao {
+	return &CouponDao{db}
+}
