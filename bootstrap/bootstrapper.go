@@ -1,6 +1,8 @@
 package bootstrap
 
+import "C"
 import (
+	"gin-sam/web/controllers"
 	"net/http"
 	"time"
 
@@ -52,6 +54,7 @@ func (b *Bootstrapper) BootStrap() *Bootstrapper {
 	b.Use(gin.Recovery())
 	// some setup todo
 	b.SetupCron()
+	controllers.Setup()
 
 	b.Static("/assets", StaticAsset)
 	b.StaticFile("favicon.ico", StaticAsset+Favicon)
