@@ -1,9 +1,10 @@
 package api
 
 import (
-	"fmt"
 	"gin-sam/comm"
 	"gin-sam/utils"
+	"gin-sam/utils/app"
+	"gin-sam/utils/e"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,7 @@ type JWTToken struct {
 }
 
 func GetAuth(c *gin.Context) {
+	appG := app.Gin{C: c}
 	username := c.Query("username")
 	password := c.Query("password")
 	a := auth{
@@ -37,29 +39,25 @@ func GetAuth(c *gin.Context) {
 	errs := validate.Struct(a)
 	if errs != nil {
 		for _, v := range errs.(validator.ValidationErrors) {
-			_ = fmt.Sprintf("[validate error] field:%s;tag:%s", v.Field(), v.Tag())
-			c.JSON(http.StatusBadRequest, gin.H{
-				"code":    422,
-				"message": fmt.Sprintf("field %s is %s", v.Field(), v.Tag()),
-			})
+			//c.JSON(http.StatusBadRequest, gin.H{
+			//	"code":    422,
+			//	"message": fmt.Sprintf("[validate error] field:%s;tag:%s", v.Field(), v.Tag()),
+			//})
+			appG.Response(http.StatusUnprocessableEntity, e.INVALID_PARAMS, v)
 			return
 		}
 	} else {
 		if a.UserName != "admin" || a.Password != "123456" {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Unauthorized.",
-			})
+			appG.Response(http.StatusUnauthorized, e.ERROR_AUTH, nil)
 			return
 		}
 		if token, err := utils.GenerateToken(a.UserName, a.Password); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": err,
-			})
+			appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, err)
 			return
 		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "login success",
-				"token":   token,
+			appG.Response(http.StatusOK, e.SUCCESS, JWTToken{
+				Token: token,
+				//ExpireAt: "",
 			})
 		}
 	}

@@ -10,26 +10,29 @@ type UserDayNumDao struct {
 	db *gorm.DB
 }
 
-func (d *UserDayNumDao) GetAll() (result []*models.UserDayNum, err error) {
-	err = d.db.Find(&result).Error
-	return
+func (d *UserDayNumDao) GetAll() ([]*models.UserDayNum, error) {
+	var result []*models.UserDayNum
+	err := d.db.Find(&result).Error
+	return result, err
 }
 
-func (d *UserDayNumDao) Get(id int) (result *models.UserDayNum, err error) {
-	err = d.db.Where("id = ", id).First(&result).Error
-	return
+func (d *UserDayNumDao) Get(id int) (*models.UserDayNum, error) {
+	var result models.UserDayNum
+	err := d.db.Where("id = ?", id).First(&result).Error
+	return &result, err
 }
 
 func (d *UserDayNumDao) Delete(id int) error {
-	return d.db.Where("id = ", id).Delete(models.UserDayNum{}).Error
+	return d.db.Where("id = ?", id).Delete(models.UserDayNum{}).Error
 }
-func (d *UserDayNumDao) CountAll() (count int64, err error) {
-	err = d.db.Model(&models.UserDayNum{}).Count(&count).Error
-	return
+func (d *UserDayNumDao) CountAll() (int64, error) {
+	var count int64
+	err := d.db.Model(&models.UserDayNum{}).Count(&count).Error
+	return count, err
 }
 
 func (d *UserDayNumDao) Update(id int, data interface{}) error {
-	return d.db.Model(&models.UserDayNum{}).Where("id = ", id).Updates(data).Error
+	return d.db.Model(&models.UserDayNum{}).Where("id = ?", id).Updates(data).Error
 }
 
 func (d *UserDayNumDao) Create(data *models.UserDayNum) error {

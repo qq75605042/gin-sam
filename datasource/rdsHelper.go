@@ -1,8 +1,8 @@
 package datasource
 
 import (
-	"awesomeProject/conf"
 	"fmt"
+	"gin-sam/conf"
 	"log"
 	"sync"
 	"time"

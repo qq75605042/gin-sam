@@ -14,19 +14,22 @@ func NewUserDao(db *gorm.DB) *UserDao {
 	return &UserDao{db}
 }
 
-func (d *UserDao) GetAll() (result []*models.User, err error) {
-	err = d.db.Find(&result).Error
-	return
+func (d *UserDao) GetAll() ([]*models.User, error) {
+	var result []*models.User
+	err := d.db.Find(&result).Error
+	return result, err
 }
 
-func (d *UserDao) Get(id int) (result *models.User, err error) {
-	err = d.db.Where("id = ", id).First(&result).Error
-	return
+func (d *UserDao) Get(id int) (*models.User, error) {
+	var result models.User
+	err := d.db.Debug().Where("id = ?", id).First(&result).Error
+	return &result, err
 }
 
-func (d *UserDao) CountAll() (count int64, err error) {
-	err = d.db.Model(&models.User{}).Count(&count).Error
-	return
+func (d *UserDao) CountAll() (int64, error) {
+	var count int64
+	err := d.db.Model(&models.User{}).Count(&count).Error
+	return count, err
 }
 
 func (d *UserDao) Delete(id int) error {
@@ -34,7 +37,7 @@ func (d *UserDao) Delete(id int) error {
 }
 
 func (d *UserDao) Update(id int, data interface{}) error {
-	return d.db.Model(&models.User{}).Where("id = ", id).Updates(data).Error
+	return d.db.Model(&models.User{}).Where("id = ?", id).Updates(data).Error
 }
 
 func (d *UserDao) Create(data *models.User) error {
