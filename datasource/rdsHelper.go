@@ -60,6 +60,11 @@ func NewCache() *RedisConn {
 				log.Fatal("redis dial err:", e)
 				return nil, e
 			}
+			_, e = dial.Do("select", 1)
+			if e != nil {
+				log.Fatal("redis select db err:", e)
+				return nil, e
+			}
 			return dial, nil
 		},
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {
